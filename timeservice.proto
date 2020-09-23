@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "pb";
+
+message Time{
+    string value = 1;
+}
+
+message TimeUpdate {
+    Time time =  1;
+}
+
+message NowRequest {}
+
+
+message TimeStreamRequest {
+    int32 length = 1;
+}
+
+service TimeService {
+    rpc Now(NowRequest) returns (TimeUpdate);
+
+    // asagidaki bir server stream ornegidir. http2 sayesinde tek bir tcp baglantisi uzerinden
+    // websocketlerde oldugu gibi defaatle veri gonderip alma islemi yapabiliyoruz.
+    // asagidaki stream TimeUpdate ifadesi, server'in TimeUpdate tipinde veri stream edecegini
+    // yani defaatle bu tipte bir veriyi donebilecegini belirtiyor.
+    rpc Stream(TimeStreamRequest) returns (stream TimeUpdate);
+}
